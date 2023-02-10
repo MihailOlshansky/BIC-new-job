@@ -1,2 +1,5 @@
 .idea/
-.target/
+target/
+example.txt
+lng.txt
+output.txt
