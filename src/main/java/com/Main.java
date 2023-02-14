@@ -15,8 +15,8 @@ public class Main {
         outputFile.createNewFile();
         PrintStream output = new PrintStream(outputFile);
 
-        int index = 1;
-        if (args.length < index + 1) {
+        int index = args.length - 1;
+        if (args.length == 0) {
             printException(output, "Insert the file to parse, please");
             return;
         }
@@ -39,6 +39,8 @@ public class Main {
         long end = System.nanoTime();
         System.out.printf("Группировка: %d секунд%n", toSec(end - parseTime));
         printResult(output, groups, toSec(end - start));
+        System.out.printf("Вывод: %d секунд%n", toSec(System.nanoTime() - end));
+        System.out.printf("Вся прога: %d секунд%n", toSec(System.nanoTime() - start));
     }
 
     private static void printException(PrintStream ps, String message) {

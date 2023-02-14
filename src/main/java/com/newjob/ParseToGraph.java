@@ -25,9 +25,10 @@ public class ParseToGraph {
                             .filter(node -> !node.data().isBlank())
                             .toList());
 
-                    for (int i = 0; i < data.length; i++) {
+                    for (int i = 0; i < nodes.size(); i++) {
                         Graph.Node cur = nodes.remove(0);
                         graph.putAdjacentNodes(cur, nodes);
+                        nodes.add(cur);
                     }
                 });
 
