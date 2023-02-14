@@ -20,13 +20,8 @@ public class Main {
 
         File file = new File(args[args.length - 1]);
 
-        Groups groups;
-        try {
-            groups = FindGroups.parse(file);
-        } catch (IOException e) {
-            printException(output, String.format("Wrong filepath %s%n", file.getAbsolutePath()));
-            return;
-        }
+        Groups groups = findGroups(file, output);
+        if (groups == null) return;
 
         long end = System.nanoTime();
         printResult(output, groups.getGroups(), start, end);
@@ -36,6 +31,15 @@ public class Main {
         File outputFile = new File("output.txt");
         outputFile.createNewFile();
         return new PrintStream(outputFile);
+    }
+
+    private static Groups findGroups(File file, PrintStream ps) {
+        try {
+            return FindGroups.parse(file);
+        } catch (IOException e) {
+            printException(ps, String.format("Wrong filepath %s%n", file.getAbsolutePath()));
+            return null;
+        }
     }
 
     private static void printException(PrintStream ps, String message) {
