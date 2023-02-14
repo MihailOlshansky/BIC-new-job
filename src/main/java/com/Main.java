@@ -43,10 +43,10 @@ public class Main {
     }
 
     private static void printResult(PrintStream ps, Collection<List<String>> groups, long start, long end){
-        System.out.printf("Алгоритм: %d секунд%n", toSec(end - start));
+        System.out.printf("Algorithm: %d seconds%n", toSec(end - start));
         printGroups(ps, groups, toSec(end - start));
-        System.out.printf("Вывод: %d секунд%n", toSec(System.nanoTime() - end));
-        System.out.printf("Вся программа: %d секунд%n", toSec(System.nanoTime() - start));
+        System.out.printf("Output: %d seconds%n", toSec(System.nanoTime() - end));
+        System.out.printf("Whole program: %d seconds%n", toSec(System.nanoTime() - start));
     }
 
     private static void printGroups(PrintStream ps, Collection<List<String>> groups, int duration) {
