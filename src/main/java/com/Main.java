@@ -1,55 +1,57 @@
 package com;
 
-import com.newjob.FindGroups;
-import com.newjob.Graph;
-import com.newjob.Group;
-import com.newjob.ParseToGraph;
+import com.newjob.*;
 
 import java.io.*;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        File outputFile = new File("output.txt");
-        outputFile.createNewFile();
-        PrintStream output = new PrintStream(outputFile);
+        long start = System.nanoTime();
 
-        int index = args.length - 1;
+        PrintStream output = getOutputPrintStream();
+
         if (args.length == 0) {
             printException(output, "Insert the file to parse, please");
             return;
         }
 
-        File file = new File(args[index]);
+        File file = new File(args[args.length - 1]);
 
-        long start = System.nanoTime();
-        Graph graph;
+        Groups groups;
         try {
-            graph = ParseToGraph.parse(file);
+            groups = FindGroups.parse(file);
         } catch (IOException e) {
             printException(output, String.format("Wrong filepath %s%n", file.getAbsolutePath()));
             return;
         }
-        var parseTime = System.nanoTime();
-        System.out.printf("Парсинг: %d секунд%n", toSec(parseTime - start));
-
-        Collection<Group> groups = FindGroups.findGroups(graph);
 
         long end = System.nanoTime();
-        System.out.printf("Группировка: %d секунд%n", toSec(end - parseTime));
-        printResult(output, groups, toSec(end - start));
-        System.out.printf("Вывод: %d секунд%n", toSec(System.nanoTime() - end));
-        System.out.printf("Вся прога: %d секунд%n", toSec(System.nanoTime() - start));
+        printResult(output, groups.getGroups(), start, end);
+    }
+
+    private static PrintStream getOutputPrintStream() throws IOException {
+        File outputFile = new File("output.txt");
+        outputFile.createNewFile();
+        return new PrintStream(outputFile);
     }
 
     private static void printException(PrintStream ps, String message) {
         ps.println(message);
     }
 
-    private static void printResult(PrintStream ps, Collection<Group> groups, int duration) {
+    private static void printResult(PrintStream ps, Collection<List<String>> groups, long start, long end){
+        System.out.printf("Алгоритм: %d секунд%n", toSec(end - start));
+        printGroups(ps, groups, toSec(end - start));
+        System.out.printf("Вывод: %d секунд%n", toSec(System.nanoTime() - end));
+        System.out.printf("Вся программа: %d секунд%n", toSec(System.nanoTime() - start));
+    }
 
-        ps.printf("Время исполнения программы: %d секунд%n", duration);
+    private static void printGroups(PrintStream ps, Collection<List<String>> groups, int duration) {
+
+        ps.printf("Время алгоритма группировки: %d секунд%n", duration);
         ps.printf(
                 "Групп больше чем с 1 элементом %d%n",
                 groups.stream()
@@ -61,7 +63,7 @@ public class Main {
                 .sorted(Comparator.comparingInt(group -> -group.size()))
                 .forEach(group -> {
             ps.printf("Группа %d (%d строк)%n", index[0]++, group.size());
-            group.members().forEach(ps::println);
+            group.forEach(ps::println);
         });
     }
 
